@@ -6,4 +6,7 @@
 - **AAR**
 - **AAB**
 
-This tool provides valuable insights into the artifact size
+This tool provides valuable insights into the artifact size.
+
+Example custom values in `nowinandroid` for `assembleDebug`:
+![Custom Values](resources/customvalues.png)
