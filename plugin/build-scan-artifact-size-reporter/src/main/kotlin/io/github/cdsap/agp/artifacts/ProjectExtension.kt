@@ -14,6 +14,8 @@ import java.io.File
                  .forEach {
                      develocityConfiguration.buildScan.value("${it.name}", it.readText())
                  }
+             projectBuildLayout.get()
+                 .dir(output).asFile.deleteRecursively()
          }
      }
  }
