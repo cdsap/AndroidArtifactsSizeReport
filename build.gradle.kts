@@ -5,3 +5,8 @@ plugins {
     alias(libs.plugins.ktlint)
 }
 
+rootProject.develocity.buildScan {
+    buildScanPublished {
+        File("temp_build_scan_id.txt").writeText(buildScanId)
+    }
+}
