@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - test_integration
+      - main
   pull_request:
 
 jobs:
