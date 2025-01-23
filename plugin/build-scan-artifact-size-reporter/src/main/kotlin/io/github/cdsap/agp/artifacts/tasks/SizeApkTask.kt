@@ -13,7 +13,6 @@ import org.gradle.api.tasks.TaskAction
 import java.io.File
 
 abstract class SizeApkTask : DefaultTask() {
-
     @get:InputDirectory
     @get:PathSensitive(PathSensitivity.RELATIVE)
     abstract val input: DirectoryProperty
@@ -31,14 +30,15 @@ abstract class SizeApkTask : DefaultTask() {
         outputFile.deleteRecursively()
         outputFile.mkdirs()
 
-        val builtArtifacts = builtArtifactsLoader.get().load(input.get())
-            ?: throw RuntimeException("Cannot load APKs")
+        val builtArtifacts =
+            builtArtifactsLoader.get().load(input.get())
+                ?: throw RuntimeException("Cannot load APKs")
 
         builtArtifacts.elements.forEach { artifact ->
             if (File(artifact.outputFile).exists()) {
-                val fileName = "${artifact.outputFile.split("/").last()}.size"
+                val fileName = "${artifact.outputFile.substringAfterLast("/")}.size"
                 outputDirectory.file(fileName).asFile.writeText(
-                    File(artifact.outputFile).length().toString()
+                    File(artifact.outputFile).length().toString(),
                 )
             }
         }

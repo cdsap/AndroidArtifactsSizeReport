@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    id("io.github.cdsap.android.library.report")
+    id("io.github.cdsap.android-artifacts-size-report")
 }
 
 android {

@@ -1,19 +1,15 @@
 package io.github.cdsap.agp.artifacts.tasks
 
-import com.android.build.api.variant.BuiltArtifactsLoader
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.provider.Property
 import org.gradle.api.tasks.InputFile
-import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 
 abstract class SizeFileTask : DefaultTask() {
-
     @get:InputFile
     @get:PathSensitive(PathSensitivity.RELATIVE)
     abstract val input: RegularFileProperty
@@ -29,10 +25,8 @@ abstract class SizeFileTask : DefaultTask() {
         outputFile.mkdirs()
         val file = input.get().asFile
         if (file.exists()) {
-            val fileName = "${file.name.split("/").last()}.size"
-            outputDirectory.file(fileName).asFile.writeText(
-                file.length().toString()
-            )
+            val fileName = "${file.name.substringAfterLast("/")}.size"
+            outputDirectory.file(fileName).asFile.writeText(file.length().toString())
         }
     }
 }

@@ -5,9 +5,11 @@ coreKtx = "1.15.0"
 develocity = "3.19"
 junit = "4.13.2"
 junitVersion = "1.2.1"
+ktlint = "12.1.2"
 espressoCore = "3.6.1"
 appcompat = "1.7.0"
 material = "1.12.0"
+publishing = "1.2.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -24,3 +26,5 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
+gradle-publish = { id = "com.gradle.plugin-publish", version.ref = "publishing" }

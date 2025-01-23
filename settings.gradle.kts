@@ -19,10 +19,11 @@ develocity {
     server = "https://ge.solutions-team.gradle.com/"
     allowUntrustedServer = true
     buildScan {
-        uploadInBackground.set(true)
+        uploadInBackground.set(false)
         publishing { true }
     }
 }
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
