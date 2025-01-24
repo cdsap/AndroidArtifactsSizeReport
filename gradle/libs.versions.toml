@@ -2,7 +2,7 @@
 agp = "8.8.0"
 kotlin = "2.1.0"
 coreKtx = "1.15.0"
-develocity = "3.19"
+develocity = "3.19.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 ktlint = "12.1.2"
