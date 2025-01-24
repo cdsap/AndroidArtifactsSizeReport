@@ -6,11 +6,11 @@ plugins {
     alias(libs.plugins.gradle.publish)
 }
 
-version = "0.1.0"
+version = "0.1.1"
 group = "io.github.cdsap"
 dependencies {
     compileOnly(libs.android.tools)
-    compileOnly(libs.develocity)
+    implementation(libs.develocity)
 }
 gradlePlugin {
     website = "https://github.com/cdsap/BuildScanArtifactSizeReporter"
