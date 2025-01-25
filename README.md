@@ -66,7 +66,7 @@ Output:
 ```
 
 ### DRK
-If you have integrated [Developer Report Kit](https://gradle.com/develocity/product/reporting-and-visualization/) you can
+If you have integrated [Develocity Reporting Kit](https://gradle.com/develocity/product/reporting-and-visualization/) you can
 query the avaliable build models and create custom visualization components.
 #### Time Series APK Debug size
 ```sql
