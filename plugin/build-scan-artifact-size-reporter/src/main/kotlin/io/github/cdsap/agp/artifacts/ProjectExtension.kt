@@ -19,3 +19,7 @@ internal fun Project.onBuildFinished(output: String) {
         }
     }
 }
+
+internal fun String.capitalize(): String {
+    return replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+}

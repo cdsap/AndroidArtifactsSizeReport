@@ -12,7 +12,7 @@ internal fun Project.configureAndroidLibrary() {
     androidComponents.onVariants { variant ->
 
         val getAar =
-            tasks.register<SizeFileTask>("sizeAar${variant.name}") {
+            tasks.register<SizeFileTask>("sizeAar${variant.name.capitalize()}") {
                 output.set(layout.buildDirectory.dir("${Output.Constants.OUTPUT}/aar/${variant.name}"))
             }
         variant.artifacts.use(getAar).wiredWith { it.input }.toListenTo(SingleArtifact.AAR)

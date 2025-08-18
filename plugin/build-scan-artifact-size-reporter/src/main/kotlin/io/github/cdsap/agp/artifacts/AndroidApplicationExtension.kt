@@ -13,7 +13,7 @@ internal fun Project.configureAndroidApplication() {
     androidComponents.onVariants { variant ->
 
         val sizeApk =
-            tasks.register<SizeApkTask>("sizeApk${variant.name}") {
+            tasks.register<SizeApkTask>("sizeApk${variant.name.capitalize()}") {
                 output.set(layout.buildDirectory.dir("${Output.Constants.OUTPUT}/apk/${variant.name}"))
                 builtArtifactsLoader.set(variant.artifacts.getBuiltArtifactsLoader())
             }
@@ -23,7 +23,7 @@ internal fun Project.configureAndroidApplication() {
         }.toListenTo(SingleArtifact.APK)
 
         val sizeBundle =
-            tasks.register<SizeFileTask>("sizeBundle${variant.name}") {
+            tasks.register<SizeFileTask>("sizeBundle${variant.name.capitalize()}") {
                 output.set(layout.buildDirectory.dir("${Output.Constants.OUTPUT}/aab/${variant.name}"))
             }
 
