@@ -8,9 +8,11 @@ plugins {
 
 version = "0.1.1"
 group = "io.github.cdsap"
+
 dependencies {
     compileOnly(libs.android.tools)
     implementation(libs.develocity)
+    testImplementation("junit:junit:4.13.2")
 }
 gradlePlugin {
     website = "https://github.com/cdsap/BuildScanArtifactSizeReporter"

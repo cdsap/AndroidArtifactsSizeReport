@@ -8,8 +8,7 @@ import org.gradle.api.Project
 
 class AndroidArtifactsInfoPlugin : Plugin<Project> {
     override fun apply(project: Project) {
-        val rootProject = project.gradle.rootProject
-        if (rootProject.extensions.findByType(DevelocityConfiguration::class.java) != null) {
+        if (project.extensions.findByType(DevelocityConfiguration::class.java) != null) {
             with(project) {
                 plugins.withType(AppPlugin::class.java) {
                     configureAndroidApplication()
