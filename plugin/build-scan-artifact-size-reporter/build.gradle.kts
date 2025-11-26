@@ -6,7 +6,7 @@ plugins {
     alias(libs.plugins.gradle.publish)
 }
 
-version = "0.1.1"
+version = "0.2.0"
 group = "io.github.cdsap"
 
 dependencies {
