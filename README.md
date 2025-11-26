@@ -9,7 +9,7 @@ The plugin supports the following artifact types:
 ## Usage
 ```kotlin
 plugins {
-  id("io.github.cdsap.android-artifacts-size-report") version "0.1.1"
+  id("io.github.cdsap.android-artifacts-size-report") version "0.2.0"
 }
 ```
 After the build is finished, the plugin will add custom values to the build scan with the size of the artifacts from the projects
