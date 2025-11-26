@@ -13,7 +13,7 @@ pluginManagement {
     }
 }
 plugins {
-    id("com.gradle.develocity") version "3.19.1"
+    id("com.gradle.develocity") version "4.0"
 }
 develocity {
     server = "https://ge.solutions-team.gradle.com/"

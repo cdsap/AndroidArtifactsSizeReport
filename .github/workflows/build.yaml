@@ -23,7 +23,7 @@ jobs:
 
       - name: Build app and library
         run: |
-          ./gradlew assembleDebug
+          ./gradlew build
           id=$(cat temp_build_scan_id.txt)
           sleep 10
           curl --location -G "https://ge.solutions-team.gradle.com/api/builds/$id/gradle-attributes" --header "Authorization: Bearer ${{ secrets.DV_API_KEY }}" > output.json
