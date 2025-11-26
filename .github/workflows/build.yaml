@@ -44,3 +44,49 @@ jobs:
         env:
           DEVELOCITY_ACCESS_KEY: ${{ secrets.DV_ACCESS_KEY }}
 
+
+  e2e_matrix:
+      name: "Build and verify custom values are included"
+      strategy:
+          fail-fast: false
+          matrix:
+              develocity-version: [ "4.0", "4.1", "4.2.2" ]
+      runs-on: ubuntu-latest
+      steps:
+          - name: Checkout
+            uses: actions/checkout@v4
+
+          - name: Set up JDK 21
+            uses: actions/setup-java@v4
+            with:
+                distribution: 'zulu'
+                java-version: 21
+
+          - name: Setup Gradle
+            uses: gradle/actions/setup-gradle@v4
+
+          - name: Build app and library
+            run: |
+                sed -i "s/id(\"com.gradle.develocity\") version \"[^\"]*\"/id(\"com.gradle.develocity\") version \"${{ matrix.develocity-version }}\"/" settings.gradle.kts
+                echo "Using Develocity plugin version: ${{ matrix.develocity-version }}"
+                ./gradlew build
+                id=$(cat temp_build_scan_id.txt)
+                sleep 10
+                curl --location -G "https://ge.solutions-team.gradle.com/api/builds/$id/gradle-attributes" --header "Authorization: Bearer ${{ secrets.DV_API_KEY }}" > output.json
+                values=$(jq -c '[.values[] | select(.name | test("\\.apk\\.size$|\\.aar\\.size$")) | {name, value}]' output.json)
+                    if [[ -z "$values" || "$values" == "[]" ]]; then
+                     echo "No matching values found. Skipping validation."
+                     exit 1
+                    fi
+                    echo "$values" | jq -c '.[]' | while read -r item; do
+                    name=$(echo "$item" | jq -r '.name')
+                    value=$(echo "$item" | jq -r '.value')
+                    if [[ $value -le 0 ]]; then
+                      echo "Error: $name has a value of $value, which is not greater than 0."
+                      exit 1
+                    fi
+                done
+                echo "All values are greater than 0."
+            env:
+                DEVELOCITY_ACCESS_KEY: ${{ secrets.DV_ACCESS_KEY }}
+
