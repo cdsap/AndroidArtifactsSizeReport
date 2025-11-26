@@ -17,3 +17,7 @@ internal fun Project.onBuildFinished(output: String) {
             .dir(output).asFile.deleteRecursively()
     }
 }
+
+internal fun String.capitalize(): String {
+    return replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+}
