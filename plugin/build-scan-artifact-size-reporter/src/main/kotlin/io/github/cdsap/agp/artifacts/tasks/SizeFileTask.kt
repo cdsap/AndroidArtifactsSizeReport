@@ -19,14 +19,9 @@ abstract class SizeFileTask : DefaultTask() {
 
     @TaskAction
     fun taskAction() {
-        val outputDirectory = output.get()
-        val outputFile = outputDirectory.asFile
-        outputFile.deleteRecursively()
-        outputFile.mkdirs()
-        val file = input.get().asFile
-        if (file.exists()) {
-            val fileName = "${file.name.substringAfterLast("/")}.size"
-            outputDirectory.file(fileName).asFile.writeText(file.length().toString())
-        }
+        ArtifactSizeOutputWriter.write(
+            output.get().asFile,
+            listOf(input.get().asFile),
+        )
     }
 }

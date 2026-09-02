@@ -25,22 +25,13 @@ abstract class SizeApkTask : DefaultTask() {
 
     @TaskAction
     fun taskAction() {
-        val outputDirectory = output.get()
-        val outputFile = outputDirectory.asFile
-        outputFile.deleteRecursively()
-        outputFile.mkdirs()
-
         val builtArtifacts =
             builtArtifactsLoader.get().load(input.get())
                 ?: throw RuntimeException("Cannot load APKs")
 
-        builtArtifacts.elements.forEach { artifact ->
-            if (File(artifact.outputFile).exists()) {
-                val fileName = "${artifact.outputFile.substringAfterLast("/")}.size"
-                outputDirectory.file(fileName).asFile.writeText(
-                    File(artifact.outputFile).length().toString(),
-                )
-            }
-        }
+        ArtifactSizeOutputWriter.write(
+            output.get().asFile,
+            builtArtifacts.elements.map { File(it.outputFile) },
+        )
     }
 }
