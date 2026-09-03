@@ -23,6 +23,8 @@ jobs:
 
       - name: Run plugin tests
         run: ./gradlew -p plugin :build-scan-artifact-size-reporter:test
+        env:
+          DEVELOCITY_ACCESS_KEY: ${{ secrets.DV_ACCESS_KEY }}
 
   build_check:
     name: "Build and verify custom values are included"
