@@ -29,23 +29,30 @@ class ConfigurationCacheE2ETest {
                 .withGradleVersion("9.2.1")
                 .withDebug(false)
 
-        val ccArgs =
-            listOf(
-                ":app:assembleDebug",
-                "--configuration-cache",
-                "--configuration-cache-problems=fail",
-                "-Dkotlin.internal.collectFUSMetrics=false",
-            )
-
-        val firstBuild = runner.withArguments(ccArgs).build()
+        val firstBuild =
+            runner
+                .withArguments(
+                    ":app:assembleDebug",
+                    "--configuration-cache",
+                    "--configuration-cache-problems=fail",
+                    "-Dkotlin.internal.collectFUSMetrics=false",
+                )
+                .build()
         assertTrue(
             "first run should store a configuration cache entry",
             firstBuild.output.contains("Configuration cache entry stored"),
         )
 
-        val secondBuild = runner.withArguments(ccArgs).build()
+        val secondBuild =
+            runner
+                .withArguments(
+                    ":app:assembleDebug",
+                    "--configuration-cache",
+                    "--configuration-cache-problems=fail",
+                )
+                .build()
         assertTrue(
-            "second run should be a configuration cache HIT but got:\n${secondBuild.output}",
+            "second run should be a configuration cache HIT",
             secondBuild.output.contains("Reusing configuration cache."),
         )
     }
