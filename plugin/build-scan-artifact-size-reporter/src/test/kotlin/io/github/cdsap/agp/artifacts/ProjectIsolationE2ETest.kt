@@ -36,7 +36,7 @@ class ProjectIsolationE2ETest(private val develocityVersion: String) {
                     "-Dorg.gradle.unsafe.isolated-projects=true",
                 )
                 .withPluginClasspath()
-                .withGradleVersion("9.2.1")
+                .withGradleVersion("9.7.1")
                 .withDebug(false)
                 .build()
         println(firstBuild.output)
@@ -99,7 +99,7 @@ class ProjectIsolationE2ETest(private val develocityVersion: String) {
 
                     }
                     dependencies {
-                        classpath ("com.android.tools.build:gradle:8.13.1")
+                        classpath ("com.android.tools.build:gradle:9.4.0")
 
                     }
                 }
@@ -121,7 +121,6 @@ class ProjectIsolationE2ETest(private val develocityVersion: String) {
             """
             plugins {
                 id("com.android.application")
-                id("org.jetbrains.kotlin.android")
                 id("io.github.cdsap.android-artifacts-size-report")
             }
 
