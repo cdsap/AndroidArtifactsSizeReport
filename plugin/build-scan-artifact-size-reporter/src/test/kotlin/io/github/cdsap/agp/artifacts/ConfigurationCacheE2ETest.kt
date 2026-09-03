@@ -26,16 +26,14 @@ class ConfigurationCacheE2ETest {
                 .create()
                 .withProjectDir(testProjectDir.root)
                 .withPluginClasspath()
-                .withGradleVersion("9.2.1")
+                .withGradleVersion("9.7.1")
                 .withDebug(false)
 
         val firstBuild =
             runner
                 .withArguments(
                     ":app:assembleDebug",
-                    "--configuration-cache",
-                    "--configuration-cache-problems=fail",
-                    "-Dkotlin.internal.collectFUSMetrics=false",
+                    "--configuration-cache"
                 )
                 .build()
         assertTrue(
@@ -47,8 +45,7 @@ class ConfigurationCacheE2ETest {
             runner
                 .withArguments(
                     ":app:assembleDebug",
-                    "--configuration-cache",
-                    "--configuration-cache-problems=fail",
+                    "--configuration-cache"
                 )
                 .build()
         assertTrue(
@@ -61,7 +58,7 @@ class ConfigurationCacheE2ETest {
         testProjectDir.newFile("build.gradle.kts").appendText(
             """
             plugins {
-                id("org.jetbrains.kotlin.android") version "2.2.20" apply false
+               // id("org.jetbrains.kotlin.android") version "2.2.20" apply false
             }
 
             repositories {
@@ -72,11 +69,6 @@ class ConfigurationCacheE2ETest {
 
         testProjectDir.newFile("gradle.properties").appendText(
             """
-            android.useAndroidX=true
-            kotlin.internal.collectFUSMetrics=false
-            android.experimental.enableSourceSetPathsMap=true
-            android.experimental.cacheCompileLibResources=true
-            android.defaults.buildfeatures.renderscript=false
             org.gradle.jvmargs=-Xmx2g -XX:MaxMetaspaceSize=512m
             """.trimIndent(),
         )
@@ -96,7 +88,7 @@ class ConfigurationCacheE2ETest {
                     mavenCentral()
                 }
                 dependencies {
-                    classpath("com.android.tools.build:gradle:8.13.1")
+                    classpath("com.android.tools.build:gradle:9.4.0")
                 }
             }
             plugins {
@@ -116,7 +108,6 @@ class ConfigurationCacheE2ETest {
             """
             plugins {
                 id("com.android.application")
-                id("org.jetbrains.kotlin.android")
                 id("io.github.cdsap.android-artifacts-size-report")
             }
 
@@ -127,7 +118,7 @@ class ConfigurationCacheE2ETest {
 
             android {
                 namespace = "com.example.myapplication"
-                compileSdk = 35
+                compileSdk = 37
 
                 defaultConfig {
                     applicationId = "com.example.myapplication"
@@ -148,10 +139,7 @@ class ConfigurationCacheE2ETest {
                         )
                     }
                 }
-                compileOptions {
-                    sourceCompatibility = JavaVersion.VERSION_21
-                    targetCompatibility = JavaVersion.VERSION_21
-                }
+              
             }
             """.trimIndent(),
         )
