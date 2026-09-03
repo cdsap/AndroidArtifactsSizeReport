@@ -13,7 +13,7 @@ class ProjectIsolationE2ETest(private val develocityVersion: String) {
     companion object {
         @JvmStatic
         @Parameterized.Parameters(name = "develocityVersion={0}")
-        fun versions() = listOf("4.2.2", "4.1", "3.19.2")
+        fun versions() = listOf("4.2.2", "4.1", "4.5.0")
     }
 
     @Rule
