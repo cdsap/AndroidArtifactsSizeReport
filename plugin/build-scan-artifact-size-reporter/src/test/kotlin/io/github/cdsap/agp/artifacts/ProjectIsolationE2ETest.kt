@@ -13,7 +13,7 @@ class ProjectIsolationE2ETest(private val develocityVersion: String) {
     companion object {
         @JvmStatic
         @Parameterized.Parameters(name = "develocityVersion={0}")
-        fun versions() = listOf("4.2.2", "4.1", "3.19.2")
+        fun versions() = listOf("4.2.2", "4.1", "4.5.0")
     }
 
     @Rule
@@ -36,7 +36,7 @@ class ProjectIsolationE2ETest(private val develocityVersion: String) {
                     "-Dorg.gradle.unsafe.isolated-projects=true",
                 )
                 .withPluginClasspath()
-                .withGradleVersion("9.2.1")
+                .withGradleVersion("9.7.1")
                 .withDebug(false)
                 .build()
         println(firstBuild.output)
@@ -49,7 +49,7 @@ class ProjectIsolationE2ETest(private val develocityVersion: String) {
                     "-Dorg.gradle.unsafe.isolated-projects=true",
                 )
                 .withPluginClasspath()
-                .withGradleVersion("9.2.1")
+                .withGradleVersion("9.7.1")
                 .build()
         println(secondBuild.output)
         assertTrue(firstBuild.output.contains("Configuration cache entry stored"))
@@ -59,10 +59,6 @@ class ProjectIsolationE2ETest(private val develocityVersion: String) {
     private fun createBuildGradle(develocityVersion: String) {
         testProjectDir.newFile("build.gradle.kts").appendText(
             """
-            plugins {
-                id("org.jetbrains.kotlin.android") version "2.2.20" apply false
-            }
-            println("alo")
             repositories {
                 mavenCentral()
 
@@ -78,6 +74,7 @@ class ProjectIsolationE2ETest(private val develocityVersion: String) {
             android.experimental.enableSourceSetPathsMap=true
             android.experimental.cacheCompileLibResources=true
             android.defaults.buildfeatures.renderscript=false
+            org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
             """.trimIndent(),
         )
 
@@ -98,7 +95,7 @@ class ProjectIsolationE2ETest(private val develocityVersion: String) {
 
                     }
                     dependencies {
-                        classpath ("com.android.tools.build:gradle:8.13.1")
+                        classpath ("com.android.tools.build:gradle:9.4.0")
 
                     }
                 }
@@ -120,7 +117,6 @@ class ProjectIsolationE2ETest(private val develocityVersion: String) {
             """
             plugins {
                 id("com.android.application")
-                id("org.jetbrains.kotlin.android")
                 id("io.github.cdsap.android-artifacts-size-report")
             }
 
@@ -153,8 +149,8 @@ class ProjectIsolationE2ETest(private val develocityVersion: String) {
                     }
                 }
                 compileOptions {
-                    sourceCompatibility = JavaVersion.VERSION_21
-                    targetCompatibility = JavaVersion.VERSION_21
+                    sourceCompatibility = JavaVersion.VERSION_23
+                    targetCompatibility = JavaVersion.VERSION_23
                 }
             }
 
