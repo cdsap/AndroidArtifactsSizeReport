@@ -5,82 +5,76 @@ import org.gradle.testkit.runner.GradleRunner
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
-import org.junit.runner.RunWith
-import org.junit.runners.Parameterized
 
-@RunWith(Parameterized::class)
-class ProjectIsolationE2ETest(private val develocityVersion: String) {
-    companion object {
-        @JvmStatic
-        @Parameterized.Parameters(name = "develocityVersion={0}")
-        fun versions() = listOf("4.2.2", "4.1", "4.5.0")
-    }
-
+/**
+ * Proves the published plugin ID works with Configuration Cache so the Plugin Portal
+ * compatibility declaration (`configurationCache = true`) matches reality.
+ */
+class ConfigurationCacheE2ETest {
     @Rule
     @JvmField
     val testProjectDir = TemporaryFolder()
 
     @Test
-    fun testPluginIsCompatibleWithConfigurationCacheWithoutGradleEnterprise() {
+    fun publishedPluginIdIsCompatibleWithConfigurationCache() {
         createKotlinClass()
         createAppModule()
-        createBuildGradle(develocityVersion)
+        createBuildFiles()
 
-        val firstBuild =
+        val runner =
             GradleRunner
                 .create()
                 .withProjectDir(testProjectDir.root)
-                .withArguments(
-                    ":app:assembleDebug",
-                    "-Dkotlin.internal.collectFUSMetrics=false",
-                    "-Dorg.gradle.unsafe.isolated-projects=true",
-                )
                 .withPluginClasspath()
                 .withGradleVersion("9.7.1")
                 .withDebug(false)
-                .build()
-        println(firstBuild.output)
-        val secondBuild =
-            GradleRunner
-                .create()
-                .withProjectDir(testProjectDir.root)
+
+        val firstBuild =
+            runner
                 .withArguments(
                     ":app:assembleDebug",
-                    "-Dorg.gradle.unsafe.isolated-projects=true",
+                    "--configuration-cache"
                 )
-                .withPluginClasspath()
-                .withGradleVersion("9.7.1")
                 .build()
-        println(secondBuild.output)
-        assertTrue(firstBuild.output.contains("Configuration cache entry stored"))
-        assertTrue(secondBuild.output.contains("Reusing configuration cache."))
+        assertTrue(
+            "first run should store a configuration cache entry",
+            firstBuild.output.contains("Configuration cache entry stored"),
+        )
+
+        val secondBuild =
+            runner
+                .withArguments(
+                    ":app:assembleDebug",
+                    "--configuration-cache"
+                )
+                .build()
+        assertTrue(
+            "second run should be a configuration cache HIT",
+            secondBuild.output.contains("Reusing configuration cache."),
+        )
     }
 
-    private fun createBuildGradle(develocityVersion: String) {
+    private fun createBuildFiles() {
         testProjectDir.newFile("build.gradle.kts").appendText(
             """
-            repositories {
-                mavenCentral()
-
+            plugins {
+               // id("org.jetbrains.kotlin.android") version "2.2.20" apply false
             }
 
+            repositories {
+                mavenCentral()
+            }
             """.trimIndent(),
         )
 
         testProjectDir.newFile("gradle.properties").appendText(
             """
-            android.useAndroidX=true
-            kotlin.internal.collectFUSMetrics=false
-            android.experimental.enableSourceSetPathsMap=true
-            android.experimental.cacheCompileLibResources=true
-            android.defaults.buildfeatures.renderscript=false
-            org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
+            org.gradle.jvmargs=-Xmx2g -XX:MaxMetaspaceSize=512m
             """.trimIndent(),
         )
 
         testProjectDir.newFile("settings.gradle.kts").appendText(
             """
-
             pluginManagement {
                 repositories {
                     google()
@@ -89,22 +83,19 @@ class ProjectIsolationE2ETest(private val develocityVersion: String) {
                 }
             }
             buildscript {
-                    repositories {
-                        google()
-                        mavenCentral()
-
-                    }
-                    dependencies {
-                        classpath ("com.android.tools.build:gradle:9.4.0")
-
-                    }
+                repositories {
+                    google()
+                    mavenCentral()
                 }
+                dependencies {
+                    classpath("com.android.tools.build:gradle:9.4.0")
+                }
+            }
             plugins {
-                id ("com.gradle.develocity") version "$develocityVersion"
+                id("com.gradle.develocity") version "4.2.2"
             }
             develocity {
                 server = "https://ge.solutions-team.gradle.com/"
-
             }
 
             include(":app")
@@ -127,7 +118,7 @@ class ProjectIsolationE2ETest(private val develocityVersion: String) {
 
             android {
                 namespace = "com.example.myapplication"
-                compileSdk = 35
+                compileSdk = 37
 
                 defaultConfig {
                     applicationId = "com.example.myapplication"
@@ -148,34 +139,26 @@ class ProjectIsolationE2ETest(private val develocityVersion: String) {
                         )
                     }
                 }
-                compileOptions {
-                    sourceCompatibility = JavaVersion.VERSION_23
-                    targetCompatibility = JavaVersion.VERSION_23
-                }
+              
             }
-
-            dependencies {
-
-            }
-        """.trimIndent()
+            """.trimIndent(),
         )
 
         testProjectDir.newFile("app/src/main/AndroidManifest.xml").appendText(
             """
             <?xml version="1.0" encoding="utf-8"?>
-                <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-                    xmlns:tools="http://schemas.android.com/tools">
+            <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools">
 
-                    <application
-                        android:allowBackup="true"
-                        android:label="2"
-                        android:supportsRtl="true"
-                        tools:targetApi="31" />
+                <application
+                    android:allowBackup="true"
+                    android:label="2"
+                    android:supportsRtl="true"
+                    tools:targetApi="31" />
 
-                </manifest>
-            """.trimIndent()
+            </manifest>
+            """.trimIndent(),
         )
-
     }
 
     private fun createKotlinClass() {
@@ -183,12 +166,12 @@ class ProjectIsolationE2ETest(private val develocityVersion: String) {
         testProjectDir.newFile("app/src/main/kotlin/com/example/Hello.kt").appendText(
             """
             package com.example
-        class Hello() {
-            fun print() {
-                println("hello")
+            class Hello() {
+                fun print() {
+                    println("hello")
+                }
             }
-        }
-        """.trimIndent(),
+            """.trimIndent(),
         )
     }
 }

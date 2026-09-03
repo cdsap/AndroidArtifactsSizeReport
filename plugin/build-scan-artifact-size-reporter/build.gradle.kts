@@ -1,3 +1,5 @@
+import org.gradle.plugin.compatibility.compatibility
+
 plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
@@ -14,6 +16,12 @@ dependencies {
     compileOnly(libs.develocity)
     testImplementation("junit:junit:4.13.2")
 }
+
+tasks.test {
+    maxHeapSize = "1g"
+    jvmArgs("-XX:MaxMetaspaceSize=512m")
+}
+
 gradlePlugin {
     website = "https://github.com/cdsap/BuildScanArtifactSizeReporter"
     vcsUrl = "https://github.com/cdsap/BuildScanArtifactSizeReporter.git"
@@ -24,6 +32,11 @@ gradlePlugin {
             displayName = "Android Artifacts Size Report"
             description = "Extends Build Scans by adding custom values with the artifacts size of Android projects"
             tags = listOf("build scans", "android")
+            compatibility {
+                features {
+                    configurationCache = true
+                }
+            }
         }
     }
 }
