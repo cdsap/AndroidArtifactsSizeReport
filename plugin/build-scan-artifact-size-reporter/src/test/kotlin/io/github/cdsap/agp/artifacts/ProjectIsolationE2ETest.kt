@@ -49,7 +49,7 @@ class ProjectIsolationE2ETest(private val develocityVersion: String) {
                     "-Dorg.gradle.unsafe.isolated-projects=true",
                 )
                 .withPluginClasspath()
-                .withGradleVersion("9.2.1")
+                .withGradleVersion("9.7.1")
                 .build()
         println(secondBuild.output)
         assertTrue(firstBuild.output.contains("Configuration cache entry stored"))
