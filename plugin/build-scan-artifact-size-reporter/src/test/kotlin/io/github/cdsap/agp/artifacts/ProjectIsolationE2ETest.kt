@@ -78,6 +78,7 @@ class ProjectIsolationE2ETest(private val develocityVersion: String) {
             android.experimental.enableSourceSetPathsMap=true
             android.experimental.cacheCompileLibResources=true
             android.defaults.buildfeatures.renderscript=false
+            org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
             """.trimIndent(),
         )
 
