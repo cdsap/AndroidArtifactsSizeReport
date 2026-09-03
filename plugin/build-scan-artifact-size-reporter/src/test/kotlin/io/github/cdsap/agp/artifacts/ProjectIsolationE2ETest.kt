@@ -59,10 +59,6 @@ class ProjectIsolationE2ETest(private val develocityVersion: String) {
     private fun createBuildGradle(develocityVersion: String) {
         testProjectDir.newFile("build.gradle.kts").appendText(
             """
-            plugins {
-                id("org.jetbrains.kotlin.android") version "2.2.20" apply false
-            }
-            println("alo")
             repositories {
                 mavenCentral()
 
