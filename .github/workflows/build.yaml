@@ -21,6 +21,12 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - name: Build Process Watcher
+        uses: cdsap/build-process-watcher@v0.6.2
+        with:
+          remote_monitoring: 'true'
+          export_to_bigquery: 'true'
+
       - name: Run plugin tests
         run: ./gradlew -p plugin :build-scan-artifact-size-reporter:test
         env:
@@ -41,6 +47,12 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
+
+      - name: Build Process Watcher
+        uses: cdsap/build-process-watcher@v0.6.2
+        with:
+          remote_monitoring: 'true'
+          export_to_bigquery: 'true'
 
       - name: Build app and library
         run: |
@@ -85,6 +97,12 @@ jobs:
 
           - name: Setup Gradle
             uses: gradle/actions/setup-gradle@v4
+
+          - name: Build Process Watcher
+            uses: cdsap/build-process-watcher@v0.6.2
+            with:
+                remote_monitoring: 'true'
+                export_to_bigquery: 'true'
 
           - name: Build app and library
             run: |
