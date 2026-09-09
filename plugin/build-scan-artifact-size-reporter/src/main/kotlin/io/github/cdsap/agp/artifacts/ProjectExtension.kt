@@ -2,19 +2,15 @@ package io.github.cdsap.agp.artifacts
 
 import com.gradle.develocity.agent.gradle.DevelocityConfiguration
 import org.gradle.api.Project
-import java.io.File
 
 internal fun Project.onBuildFinished(output: String) {
     val projectBuildLayout = this.layout.buildDirectory
     val develocityConfiguration = extensions.findByType(DevelocityConfiguration::class.java)
     develocityConfiguration?.buildScan?.buildFinished {
-        projectBuildLayout.get()
-            .dir(output).asFileTree.files.filterIsInstance<File>()
-            .forEach {
-                develocityConfiguration.buildScan.value(it.name, it.readText())
-            }
-        projectBuildLayout.get()
-            .dir(output).asFile.deleteRecursively()
+        val outputDirectory = projectBuildLayout.get().dir(output).asFile
+        ArtifactSizeBuildScanValuePublisher.publish(outputDirectory) { name, value ->
+            develocityConfiguration.buildScan.value(name, value)
+        }
     }
 }
 
