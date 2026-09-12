@@ -14,6 +14,5 @@ internal object ArtifactSizeBuildScanValuePublisher {
                     publishValue(marker.name, marker.readText())
                 }
         }
-        outputDirectory.deleteRecursively()
     }
 }

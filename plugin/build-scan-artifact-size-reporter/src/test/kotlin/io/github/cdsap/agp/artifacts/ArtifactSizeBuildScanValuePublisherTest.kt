@@ -14,10 +14,10 @@ class ArtifactSizeBuildScanValuePublisherTest {
     val tempFolder = TemporaryFolder()
 
     @Test
-    fun publishesMarkerFilesAsNameValuePairsAndDeletesDirectory() {
+    fun publishesMarkerFilesAsNameValuePairsAndLeavesDirectoryIntact() {
         val outputDir = tempFolder.newFolder("markers")
-        File(outputDir, "app-debug.apk.size").writeText("42")
-        File(outputDir, "app-release.aab.size").writeText("100")
+        val apkMarker = File(outputDir, "app-debug.apk.size").also { it.writeText("42") }
+        val aabMarker = File(outputDir, "app-release.aab.size").also { it.writeText("100") }
         val published = mutableListOf<Pair<String, String>>()
 
         ArtifactSizeBuildScanValuePublisher.publish(outputDir) { name, value ->
@@ -28,14 +28,16 @@ class ArtifactSizeBuildScanValuePublisherTest {
             setOf("app-debug.apk.size" to "42", "app-release.aab.size" to "100"),
             published.toSet(),
         )
-        assertFalse(outputDir.exists())
+        assertTrue(outputDir.exists())
+        assertEquals("42", apkMarker.readText())
+        assertEquals("100", aabMarker.readText())
     }
 
     @Test
-    fun publishesNestedMarkerUsingFileNameOnly() {
+    fun publishesNestedMarkerUsingFileNameOnlyWithoutDeletingTree() {
         val outputDir = tempFolder.newFolder("markers")
         val nested = File(outputDir, "nested").also { it.mkdirs() }
-        File(nested, "module.apk.size").writeText("5")
+        val marker = File(nested, "module.apk.size").also { it.writeText("5") }
         val published = mutableListOf<Pair<String, String>>()
 
         ArtifactSizeBuildScanValuePublisher.publish(outputDir) { name, value ->
@@ -43,11 +45,13 @@ class ArtifactSizeBuildScanValuePublisherTest {
         }
 
         assertEquals(listOf("module.apk.size" to "5"), published)
-        assertFalse(outputDir.exists())
+        assertTrue(outputDir.exists())
+        assertTrue(nested.exists())
+        assertEquals("5", marker.readText())
     }
 
     @Test
-    fun emptyMarkerDirectoryPublishesNothingAndIsDeleted() {
+    fun emptyMarkerDirectoryPublishesNothingAndRemains() {
         val outputDir = tempFolder.newFolder("markers")
         val published = mutableListOf<Pair<String, String>>()
 
@@ -56,7 +60,7 @@ class ArtifactSizeBuildScanValuePublisherTest {
         }
 
         assertTrue(published.isEmpty())
-        assertFalse(outputDir.exists())
+        assertTrue(outputDir.exists())
     }
 
     @Test
