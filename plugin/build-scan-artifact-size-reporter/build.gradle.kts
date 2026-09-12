@@ -14,6 +14,7 @@ group = "io.github.cdsap"
 dependencies {
     compileOnly(libs.android.tools)
     compileOnly(libs.develocity)
+    testImplementation(libs.develocity)
     testImplementation("junit:junit:4.13.2")
 }
 
