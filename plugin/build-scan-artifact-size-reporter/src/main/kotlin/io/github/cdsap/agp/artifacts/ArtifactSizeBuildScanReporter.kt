@@ -2,8 +2,8 @@ package io.github.cdsap.agp.artifacts
 
 import java.io.File
 
-internal object ArtifactSizeBuildScanValuePublisher {
-    fun publish(
+internal object ArtifactSizeBuildScanReporter {
+    fun report(
         outputDirectory: File,
         publishValue: (name: String, value: String) -> Unit,
     ) {
