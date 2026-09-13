@@ -35,7 +35,6 @@ class ProjectIsolationE2ETest(private val develocityVersion: String) {
                     "-Dkotlin.internal.collectFUSMetrics=false",
                     "-Dorg.gradle.unsafe.isolated-projects=true",
                 )
-                .withPluginClasspath()
                 .withGradleVersion("9.7.1")
                 .withDebug(false)
                 .build()
@@ -48,7 +47,6 @@ class ProjectIsolationE2ETest(private val develocityVersion: String) {
                     ":app:assembleDebug",
                     "-Dorg.gradle.unsafe.isolated-projects=true",
                 )
-                .withPluginClasspath()
                 .withGradleVersion("9.7.1")
                 .build()
         println(secondBuild.output)
@@ -83,6 +81,7 @@ class ProjectIsolationE2ETest(private val develocityVersion: String) {
 
             pluginManagement {
                 repositories {
+                    includeBuild("${pluginDir().absolutePath}")
                     google()
                     mavenCentral()
                     gradlePluginPortal()
@@ -110,6 +109,18 @@ class ProjectIsolationE2ETest(private val develocityVersion: String) {
             include(":app")
             """.trimIndent(),
         )
+    }
+
+    private fun pluginDir(): java.io.File {
+        var dir = java.io.File(System.getProperty("user.dir")).absoluteFile
+        repeat(6) {
+            val candidate = java.io.File(dir, "plugin")
+            if (candidate.isDirectory) {
+                return candidate
+            }
+            dir = dir.parentFile ?: return@repeat
+        }
+        error("Could not locate plugin/ from ${System.getProperty("user.dir")}")
     }
 
     private fun createAppModule() {
@@ -157,7 +168,7 @@ class ProjectIsolationE2ETest(private val develocityVersion: String) {
             dependencies {
 
             }
-        """.trimIndent()
+            """.trimIndent(),
         )
 
         testProjectDir.newFile("app/src/main/AndroidManifest.xml").appendText(
@@ -173,22 +184,21 @@ class ProjectIsolationE2ETest(private val develocityVersion: String) {
                         tools:targetApi="31" />
 
                 </manifest>
-            """.trimIndent()
+            """.trimIndent(),
         )
-
     }
 
     private fun createKotlinClass() {
         testProjectDir.newFolder("app/src/main/kotlin/com/example")
         testProjectDir.newFile("app/src/main/kotlin/com/example/Hello.kt").appendText(
             """
-            package com.example
-        class Hello() {
-            fun print() {
-                println("hello")
+                package com.example
+            class Hello() {
+                fun print() {
+                    println("hello")
+                }
             }
-        }
-        """.trimIndent(),
+            """.trimIndent(),
         )
     }
 }
