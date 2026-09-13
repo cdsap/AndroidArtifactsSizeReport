@@ -32,3 +32,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "plugin"
 include(":build-scan-artifact-size-reporter")
+include(":android-conventions")
