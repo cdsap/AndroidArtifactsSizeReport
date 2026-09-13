@@ -5,8 +5,8 @@ import org.gradle.api.Project
 
 internal fun Project.onBuildFinished(output: String) {
     val projectBuildLayout = this.layout.buildDirectory
-    val develocityConfiguration = extensions.findByType(DevelocityConfiguration::class.java)
-    develocityConfiguration?.buildScan?.buildFinished {
+    val develocityConfiguration = extensions.getByType(DevelocityConfiguration::class.java)
+    develocityConfiguration.buildScan.buildFinished {
         val outputDirectory = projectBuildLayout.get().dir(output).asFile
         ArtifactSizeBuildScanValuePublisher.publish(outputDirectory) { name, value ->
             develocityConfiguration.buildScan.value(name, value)

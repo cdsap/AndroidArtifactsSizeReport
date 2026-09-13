@@ -1,7 +1,13 @@
 pluginManagement {
     repositories {
         gradlePluginPortal()
-        google()
+        google {
+            content {
+                includeGroupByRegex("com\\.android.*")
+                includeGroupByRegex("com\\.google.*")
+                includeGroupByRegex("androidx.*")
+            }
+        }
     }
 }
 
@@ -26,3 +32,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "plugin"
 include(":build-scan-artifact-size-reporter")
+include(":android-conventions")

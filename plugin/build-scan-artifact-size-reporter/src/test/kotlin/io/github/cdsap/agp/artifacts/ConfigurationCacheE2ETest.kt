@@ -25,7 +25,6 @@ class ConfigurationCacheE2ETest {
             GradleRunner
                 .create()
                 .withProjectDir(testProjectDir.root)
-                .withPluginClasspath()
                 .withGradleVersion("9.7.1")
                 .withDebug(false)
 
@@ -33,7 +32,7 @@ class ConfigurationCacheE2ETest {
             runner
                 .withArguments(
                     ":app:assembleDebug",
-                    "--configuration-cache"
+                    "--configuration-cache",
                 )
                 .build()
         assertTrue(
@@ -45,7 +44,7 @@ class ConfigurationCacheE2ETest {
             runner
                 .withArguments(
                     ":app:assembleDebug",
-                    "--configuration-cache"
+                    "--configuration-cache",
                 )
                 .build()
         assertTrue(
@@ -77,6 +76,7 @@ class ConfigurationCacheE2ETest {
             """
             pluginManagement {
                 repositories {
+                    includeBuild("${pluginDir().absolutePath}")
                     google()
                     mavenCentral()
                     gradlePluginPortal()
@@ -101,6 +101,18 @@ class ConfigurationCacheE2ETest {
             include(":app")
             """.trimIndent(),
         )
+    }
+
+    private fun pluginDir(): java.io.File {
+        var dir = java.io.File(System.getProperty("user.dir")).absoluteFile
+        repeat(6) {
+            val candidate = java.io.File(dir, "plugin")
+            if (candidate.isDirectory) {
+                return candidate
+            }
+            dir = dir.parentFile ?: return@repeat
+        }
+        error("Could not locate plugin/ from ${System.getProperty("user.dir")}")
     }
 
     private fun createAppModule() {
