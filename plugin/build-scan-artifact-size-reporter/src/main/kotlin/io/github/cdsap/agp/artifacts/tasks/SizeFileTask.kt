@@ -13,7 +13,7 @@ import org.gradle.work.DisableCachingByDefault
 @DisableCachingByDefault(because = "Trivially cheap; only writes a file length")
 abstract class SizeFileTask : DefaultTask() {
     @get:InputFile
-    @get:PathSensitive(PathSensitivity.RELATIVE)
+    @get:PathSensitive(PathSensitivity.NONE)
     abstract val input: RegularFileProperty
 
     @get:OutputDirectory
