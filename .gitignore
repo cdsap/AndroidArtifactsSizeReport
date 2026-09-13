@@ -14,3 +14,4 @@
 .cxx
 local.properties
 plugin/build-scan-artifact-size-reporter/build/
+plugin/android-conventions/build/
