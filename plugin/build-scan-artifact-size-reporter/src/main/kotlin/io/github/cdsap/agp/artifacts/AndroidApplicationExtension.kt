@@ -14,9 +14,6 @@ internal fun Project.configureAndroidApplication() {
 
         val sizeApk =
             tasks.register<SizeApkTask>("sizeApk${variant.name.capitalize()}") {
-                group = "reporting"
-                description =
-                    "Records the size of the ${variant.name} APK for publication as a Build Scan custom value."
                 output.set(layout.buildDirectory.dir("${Output.Constants.OUTPUT}/apk/${variant.name}"))
                 builtArtifactsLoader.set(variant.artifacts.getBuiltArtifactsLoader())
             }
@@ -27,9 +24,6 @@ internal fun Project.configureAndroidApplication() {
 
         val sizeBundle =
             tasks.register<SizeFileTask>("sizeBundle${variant.name.capitalize()}") {
-                group = "reporting"
-                description =
-                    "Records the size of the ${variant.name} Bundle for publication as a Build Scan custom value."
                 output.set(layout.buildDirectory.dir("${Output.Constants.OUTPUT}/aab/${variant.name}"))
             }
 
