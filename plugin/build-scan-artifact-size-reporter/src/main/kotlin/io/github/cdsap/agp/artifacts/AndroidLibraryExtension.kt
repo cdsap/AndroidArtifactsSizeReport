@@ -13,6 +13,9 @@ internal fun Project.configureAndroidLibrary() {
 
         val getAar =
             tasks.register<SizeFileTask>("sizeAar${variant.name.capitalize()}") {
+                group = "reporting"
+                description =
+                    "Records the size of the ${variant.name} AAR for publication as a Build Scan custom value."
                 output.set(layout.buildDirectory.dir("${Output.Constants.OUTPUT}/aar/${variant.name}"))
             }
         variant.artifacts.use(getAar).wiredWith { it.input }.toListenTo(SingleArtifact.AAR)
