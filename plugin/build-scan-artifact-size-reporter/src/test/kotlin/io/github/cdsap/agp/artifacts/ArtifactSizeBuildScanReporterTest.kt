@@ -8,19 +8,19 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import java.io.File
 
-class ArtifactSizeBuildScanValuePublisherTest {
+class ArtifactSizeBuildScanReporterTest {
     @Rule
     @JvmField
     val tempFolder = TemporaryFolder()
 
     @Test
-    fun publishesMarkerFilesAsNameValuePairsAndLeavesDirectoryIntact() {
+    fun reportsMarkerFilesAsNameValuePairsAndLeavesDirectoryIntact() {
         val outputDir = tempFolder.newFolder("markers")
         val apkMarker = File(outputDir, "app-debug.apk.size").also { it.writeText("42") }
         val aabMarker = File(outputDir, "app-release.aab.size").also { it.writeText("100") }
         val published = mutableListOf<Pair<String, String>>()
 
-        ArtifactSizeBuildScanValuePublisher.publish(outputDir) { name, value ->
+        ArtifactSizeBuildScanReporter.report(outputDir) { name, value ->
             published += name to value
         }
 
@@ -34,13 +34,13 @@ class ArtifactSizeBuildScanValuePublisherTest {
     }
 
     @Test
-    fun publishesNestedMarkerUsingFileNameOnlyWithoutDeletingTree() {
+    fun reportsNestedMarkerUsingFileNameOnlyWithoutDeletingTree() {
         val outputDir = tempFolder.newFolder("markers")
         val nested = File(outputDir, "nested").also { it.mkdirs() }
         val marker = File(nested, "module.apk.size").also { it.writeText("5") }
         val published = mutableListOf<Pair<String, String>>()
 
-        ArtifactSizeBuildScanValuePublisher.publish(outputDir) { name, value ->
+        ArtifactSizeBuildScanReporter.report(outputDir) { name, value ->
             published += name to value
         }
 
@@ -51,11 +51,11 @@ class ArtifactSizeBuildScanValuePublisherTest {
     }
 
     @Test
-    fun emptyMarkerDirectoryPublishesNothingAndRemains() {
+    fun emptyMarkerDirectoryReportsNothingAndRemains() {
         val outputDir = tempFolder.newFolder("markers")
         val published = mutableListOf<Pair<String, String>>()
 
-        ArtifactSizeBuildScanValuePublisher.publish(outputDir) { name, value ->
+        ArtifactSizeBuildScanReporter.report(outputDir) { name, value ->
             published += name to value
         }
 
@@ -64,11 +64,11 @@ class ArtifactSizeBuildScanValuePublisherTest {
     }
 
     @Test
-    fun missingMarkerDirectoryPublishesNothing() {
+    fun missingMarkerDirectoryReportsNothing() {
         val missing = File(tempFolder.root, "does-not-exist")
         val published = mutableListOf<Pair<String, String>>()
 
-        ArtifactSizeBuildScanValuePublisher.publish(missing) { name, value ->
+        ArtifactSizeBuildScanReporter.report(missing) { name, value ->
             published += name to value
         }
 
