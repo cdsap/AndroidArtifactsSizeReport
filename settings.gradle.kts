@@ -13,6 +13,9 @@ pluginManagement {
     }
 }
 plugins {
+    // Keep in step with versions.develocity in gradle/libs.versions.toml.
+    // Version catalogs are wired in dependencyResolutionManagement, which is
+    // evaluated after this plugins {} block, so libs. is not reachable here.
     id("com.gradle.develocity") version "4.0"
 }
 develocity {
