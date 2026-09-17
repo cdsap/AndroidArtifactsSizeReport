@@ -1,6 +1,7 @@
 package io.github.cdsap.agp.artifacts
 
 import com.gradle.develocity.agent.gradle.DevelocityConfiguration
+import io.github.cdsap.agp.artifacts.tasks.ArtifactSizeOutputReader
 import org.gradle.api.Project
 
 internal fun Project.onBuildFinished(output: String) {
