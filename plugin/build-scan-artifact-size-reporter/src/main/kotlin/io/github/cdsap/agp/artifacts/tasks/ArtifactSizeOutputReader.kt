@@ -1,4 +1,4 @@
-package io.github.cdsap.agp.artifacts
+package io.github.cdsap.agp.artifacts.tasks
 
 import java.io.File
 

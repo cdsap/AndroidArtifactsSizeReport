@@ -1,4 +1,4 @@
-package io.github.cdsap.agp.artifacts
+package io.github.cdsap.agp.artifacts.tasks
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
