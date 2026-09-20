@@ -7,7 +7,7 @@ internal fun Project.onBuildFinished(output: String) {
     val projectBuildLayout = this.layout.buildDirectory
     val develocityConfiguration = extensions.getByType(DevelocityConfiguration::class.java)
     develocityConfiguration.buildScan.buildFinished {
-        ArtifactSizeBuildScanValuePublisher.publish(
+        OutputValuesPublisher.publish(
             outputDirectory = projectBuildLayout.get().dir(output).asFile,
         ) { name, value ->
             develocityConfiguration.buildScan.value(name, value)
