@@ -8,7 +8,7 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import java.io.File
 
-class OutputValuesPublisherTest {
+class ArtifactSizeReportPublisherTest {
     @Rule
     @JvmField
     val tempFolder = TemporaryFolder()
@@ -21,7 +21,7 @@ class OutputValuesPublisherTest {
         val aarMarker = File(outputDir, "mylibrary-release.aar.size").also { it.writeText("7") }
         val published = mutableListOf<Pair<String, String>>()
 
-        OutputValuesPublisher.publish(outputDir) { name, value ->
+        ArtifactSizeReportPublisher.publish(outputDir) { name, value ->
             published += name to value
         }
 
@@ -46,7 +46,7 @@ class OutputValuesPublisherTest {
         val marker = File(nested, "module.apk.size").also { it.writeText("5") }
         val published = mutableListOf<Pair<String, String>>()
 
-        OutputValuesPublisher.publish(outputDir) { name, value ->
+        ArtifactSizeReportPublisher.publish(outputDir) { name, value ->
             published += name to value
         }
 
@@ -61,7 +61,7 @@ class OutputValuesPublisherTest {
         val outputDir = tempFolder.newFolder("markers")
         val published = mutableListOf<Pair<String, String>>()
 
-        OutputValuesPublisher.publish(outputDir) { name, value ->
+        ArtifactSizeReportPublisher.publish(outputDir) { name, value ->
             published += name to value
         }
 
@@ -74,7 +74,7 @@ class OutputValuesPublisherTest {
         val missing = File(tempFolder.root, "does-not-exist")
         val published = mutableListOf<Pair<String, String>>()
 
-        OutputValuesPublisher.publish(missing) { name, value ->
+        ArtifactSizeReportPublisher.publish(missing) { name, value ->
             published += name to value
         }
 

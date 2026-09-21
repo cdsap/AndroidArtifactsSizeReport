@@ -3,7 +3,7 @@ package io.github.cdsap.agp.artifacts
 import io.github.cdsap.agp.artifacts.tasks.ArtifactSizeOutputReader
 import java.io.File
 
-internal object OutputValuesPublisher {
+internal object ArtifactSizeReportPublisher {
     fun publish(
         outputDirectory: File,
         publishValue: (name: String, value: String) -> Unit,
