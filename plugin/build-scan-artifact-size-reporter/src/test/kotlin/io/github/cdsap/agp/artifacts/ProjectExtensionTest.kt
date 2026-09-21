@@ -13,8 +13,8 @@ class ProjectExtensionTest {
         )
 
         assertTrue(
-            "expected OutputValuesPublisher.publish wiring",
-            extensionSource.contains("OutputValuesPublisher.publish"),
+            "expected ArtifactSizeReportPublisher.publish wiring",
+            extensionSource.contains("ArtifactSizeReportPublisher.publish"),
         )
         assertFalse(
             "build-finished callback must not walk the output tree",
