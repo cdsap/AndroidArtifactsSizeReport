@@ -16,7 +16,7 @@ internal fun Project.configureAndroidLibrary() {
                 group = "reporting"
                 description =
                     "Records the size of the ${variant.name} AAR for publication as a Build Scan custom value."
-                output.set(layout.buildDirectory.dir("${Output.Constants.OUTPUT}/aar/${variant.name}"))
+                output.set(layout.buildDirectory.dir(Output.directoryFor(ArtifactKind.AAR, variant.name)))
             }
         variant.artifacts.use(getAar).wiredWith { it.input }.toListenTo(SingleArtifact.AAR)
     }
