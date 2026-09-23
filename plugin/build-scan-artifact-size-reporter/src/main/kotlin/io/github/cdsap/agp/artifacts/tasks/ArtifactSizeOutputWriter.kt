@@ -9,11 +9,8 @@ internal object ArtifactSizeOutputWriter {
     ) {
         outputDirectory.deleteRecursively()
         outputDirectory.mkdirs()
-        artifacts.forEach { artifact ->
-            if (artifact.exists()) {
-                val markerName = "${artifact.name}.size"
-                File(outputDirectory, markerName).writeText(artifact.length().toString())
-            }
+        ArtifactSizeMarker.fromAll(artifacts).forEach { marker ->
+            File(outputDirectory, marker.fileName).writeText(marker.content)
         }
     }
 }
