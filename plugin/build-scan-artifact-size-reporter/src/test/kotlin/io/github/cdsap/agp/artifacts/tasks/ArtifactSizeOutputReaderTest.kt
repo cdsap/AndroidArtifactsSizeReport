@@ -14,56 +14,67 @@ class ArtifactSizeOutputReaderTest {
     val tempFolder = TemporaryFolder()
 
     @Test
-    fun readsMultipleApkAabAndAarMarkersAsNameValuePairs() {
+    fun readsMultipleMarkersInDiscoveredOrderWithTheirContents() {
         val outputDir = tempFolder.newFolder("markers")
-        File(outputDir, "app-debug.apk.size").writeText("42")
-        File(outputDir, "app-release.aab.size").writeText("100")
-        File(outputDir, "mylibrary-release.aar.size").writeText("7")
+        val markers = listOf(
+            File(outputDir, "app-debug.apk.size").also { it.writeText("42") },
+            File(outputDir, "app-release.aab.size").also { it.writeText("100") },
+            File(outputDir, "mylibrary-release.aar.size").also { it.writeText("7") },
+        )
 
-        val markers = ArtifactSizeOutputReader.read(outputDir)
+        val values = ArtifactSizeOutputReader.read(markers)
 
         assertEquals(
-            setOf(
+            listOf(
                 "app-debug.apk.size" to "42",
                 "app-release.aab.size" to "100",
                 "mylibrary-release.aar.size" to "7",
             ),
-            markers.toSet(),
+            values,
         )
         assertTrue(outputDir.exists())
     }
 
     @Test
-    fun emptyOutputDirectoryReturnsNoMarkersAndLeavesDirectoryIntact() {
+    fun emptyFileProducesAnEmptyValue() {
         val outputDir = tempFolder.newFolder("markers")
+        val marker = File(outputDir, "empty.apk.size").also { it.writeText("") }
 
-        val markers = ArtifactSizeOutputReader.read(outputDir)
+        val values = ArtifactSizeOutputReader.read(listOf(marker))
 
-        assertTrue(markers.isEmpty())
-        assertTrue(outputDir.exists())
+        assertEquals(listOf("empty.apk.size" to ""), values)
     }
 
     @Test
-    fun missingOutputDirectoryReturnsNoMarkers() {
-        val missing = File(tempFolder.root, "does-not-exist")
+    fun missingFilesAreIgnored() {
+        val missing = File(tempFolder.root, "does-not-exist.apk.size")
 
-        val markers = ArtifactSizeOutputReader.read(missing)
+        val values = ArtifactSizeOutputReader.read(listOf(missing))
 
-        assertTrue(markers.isEmpty())
+        assertTrue(values.isEmpty())
         assertFalse(missing.exists())
     }
 
     @Test
-    fun readsNestedMarkerUsingFileNameOnlyWithoutDeletingTree() {
+    fun preservesDuplicateNamesFromDiscoveredFiles() {
         val outputDir = tempFolder.newFolder("markers")
-        val nested = File(outputDir, "nested").also { it.mkdirs() }
-        val marker = File(nested, "module.apk.size").also { it.writeText("5") }
+        val first = File(File(outputDir, "first"), "module.apk.size").also {
+            it.parentFile.mkdirs()
+            it.writeText("5")
+        }
+        val second = File(File(outputDir, "second"), "module.apk.size").also {
+            it.parentFile.mkdirs()
+            it.writeText("9")
+        }
 
-        val markers = ArtifactSizeOutputReader.read(outputDir)
+        val values = ArtifactSizeOutputReader.read(listOf(first, second))
 
-        assertEquals(listOf("module.apk.size" to "5"), markers)
-        assertTrue(outputDir.exists())
-        assertTrue(nested.exists())
-        assertEquals("5", marker.readText())
+        assertEquals(
+            listOf(
+                "module.apk.size" to "5",
+                "module.apk.size" to "9",
+            ),
+            values,
+        )
     }
 }

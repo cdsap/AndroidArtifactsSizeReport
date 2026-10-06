@@ -7,30 +7,22 @@ import java.io.File
 
 class ProjectExtensionTest {
     @Test
-    fun onBuildFinishedDelegatesFilesystemHandlingToPublisher() {
+    fun onBuildFinishedReadsPublishesAndCleansUpOutput() {
         val extensionSource = readRepoFile(
             "plugin/build-scan-artifact-size-reporter/src/main/kotlin/io/github/cdsap/agp/artifacts/ProjectExtension.kt",
         )
 
         assertTrue(
-            "expected ArtifactSizeReportPublisher.publish wiring",
-            extensionSource.contains("ArtifactSizeReportPublisher.publish"),
-        )
-        assertFalse(
-            "build-finished callback must not walk the output tree",
-            extensionSource.contains("walkTopDown"),
+            "expected ArtifactSizeOutputReader wiring",
+            extensionSource.contains("ArtifactSizeOutputReader.read"),
         )
         assertFalse(
             "build-finished callback must not read marker files directly",
             extensionSource.contains("readText"),
         )
-        assertFalse(
-            "build-finished callback must not delete the output directory",
-            extensionSource.contains("deleteRecursively"),
-        )
-        assertFalse(
-            "build-finished callback must not call ArtifactSizeOutputReader directly",
-            extensionSource.contains("ArtifactSizeOutputReader"),
+        assertTrue(
+            "build-finished callback must delete the output directory after publishing",
+            extensionSource.contains("outputDirectory.deleteRecursively()"),
         )
     }
 
