@@ -16,6 +16,20 @@ After the build is finished, the plugin will add custom values to the build scan
 where the plugin is applied:
 ![Custom Values](resources/customvalues.png)
 
+## Plugin release
+
+The Gradle plugin is published to the [Gradle Plugin Portal](https://plugins.gradle.org/), not Maven Central. Its plugin ID is
+`io.github.cdsap.android-artifacts-size-report`, and the publication task is:
+
+```shell
+./gradlew -p plugin :build-scan-artifact-size-reporter:publishPlugins
+```
+
+The `com.gradle.plugin-publish` plugin configures the plugin Maven publication and its plugin-marker publication. The release workflow
+first runs the same task with `--validate-only`, then publishes it when a GitHub Release is published. Release tags must be
+`v<major>.<minor>.<patch>` and match the plugin version in
+`plugin/build-scan-artifact-size-reporter/build.gradle.kts`.
+
 ## Implementation
 If the project where the plugin is applied contains an Android Application or Android Library it will automatically register a task for the current variants.
 This task will be executed once the final version of the artifact type has been produced using the Android Gradle Plugin Artifact API.
